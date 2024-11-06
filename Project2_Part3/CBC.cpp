@@ -11,12 +11,10 @@ using namespace std;
 string CBC_encryption(vector<string> blocks, string key, string IV) {
   string encrypted;
   vector<string> c(blocks.size());
-  string xordinit = XOR(blocks[0], IV, 64);
-  c[0] = encryption(xordinit, key_gen(key));
+  c[0] = encryption(XOR(blocks[0], IV, 64), key_gen(key));
   encrypted += c[0];
   for (int i = 1; i < blocks.size(); i++) {
-    string xord = XOR(blocks[i], c[i-1], 64);
-     c[i] = encryption(xord, key_gen(key));
+     c[i] = encryption(XOR(blocks[i], c[i-1], 64), key_gen(key));
     encrypted += c[i];
   }
   return encrypted;
@@ -24,6 +22,12 @@ string CBC_encryption(vector<string> blocks, string key, string IV) {
 
 string CBC_decryption(vector<string> blocks, string key, string IV) {
   string decrypted;
-  
+  vector<string> p(blocks.size());
+  p[0] = XOR(decryption(blocks[0], key_gen(key)), IV, 64);
+  decrypted += p[0];
+  for (int i = 1; i < blocks.size(); i++) {
+    p[i] = XOR(decryption(blocks[i], key_gen(key)), blocks[i-1], 64);
+    decrypted += p[i];
+  }
   return decrypted;
 }
