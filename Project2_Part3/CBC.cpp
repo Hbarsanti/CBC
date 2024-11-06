@@ -10,7 +10,14 @@ using namespace std;
 
 string CBC_encryption(vector<string> blocks, string key, string IV) {
   string encrypted;
-  
+  vector<string> c(blocks.size());
+  string xordinit = XOR(blocks[0], IV, 64);
+  string c[0] = encryption(xordinit, key_gen(key));
+  for (int i = 1; i < blocks.size(); i++) {
+    string xord = XOR(blocks[i], c[i-1], 64);
+     c[i] = encryption(xord, key_gen(key));
+    encrypted += c[i];
+  }
   return encrypted;
 }
 
